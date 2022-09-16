@@ -9,6 +9,9 @@ jobs:
       jetstream:
         image: nats:alpine
         options: --name jetstream
+        ports:
+          - 4222:4222
+          - 8222:8222
 
     steps:
       - uses: actions/checkout@main
