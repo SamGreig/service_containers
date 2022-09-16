@@ -3,96 +3,84 @@ on:
   - push
 
 name: create_and_delete
-jobs:
-  set-up-nats:
-    runs on: ubuntu-latest
-    container:
-      image: nats:latest
-      ports:
-        - 4222:4222
-        - 8222:8222
-    steps:
-      - name: launch nats
-        run: docker run --name nats-server -p 4222:4222 -p 8222:8222 -ti nats:latest -js -m 8222
-  build:
-    steps:
-      - name: http request to container
-        run: curl http://localhost:8222/jsz
-  # test_create_and_delete:
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     jetstream:
-  #       image: nats:alpine
-  #       options: --name jetstream
+  jobs:
+    test_create_and_delete:
+      runs-on: ubuntu-latest
+      services:
+        jetstream:
+          image: nats:alpine
+          options: --name jetstream
 
-  #   steps:
-  #     - uses: actions/checkout@main
+      steps:
+        - uses: actions/checkout@main
 
-  #     - name: start_jetstream
-  #       run: |
-  #         chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-  #         docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-  #         docker restart jetstream
-  #     # Create a typical ORDERS stream
-  #     - name: create_orders_stream
-  #       uses: nats-io/jetstream-gh-action/create/stream@main
-  #       with:
-  #         config: action/testdata/ORDERS.json
-  #         server: jetstream
+        # - name: start_jetstream
+        #   run: |
+        #     chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+        #     docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+        #     docker restart jetstream
+        # Create a typical ORDERS stream
+        - name: http to nats
+          run: curl http://localhost:8222/jsz
+        - name: create_orders_stream
+          uses: nats-io/jetstream-gh-action/create/stream@main
+          with:
+            config: action/testdata/ORDERS.json
+            server: jetstream
 
-  #     # Create a NEW consumer on ORDERS
-  #     - name: create_new_consumer
-  #       uses: nats-io/jetstream-gh-action/create/consumer@main
-  #       with:
-  #         stream: ORDERS
-  #         config: action/testdata/ORDERS_NEW.json
-  #         server: jetstream
+        # Create a NEW consumer on ORDERS
+        - name: create_new_consumer
+          uses: nats-io/jetstream-gh-action/create/consumer@main
+          with:
+            stream: ORDERS
+            config: action/testdata/ORDERS_NEW.json
+            server: jetstream
 
-  #     # Publish a message to the stream and expect it to ack
-  #     - name: publish_order
-  #       uses: nats-io/jetstream-gh-action@main
-  #       with:
-  #         subject: ORDERS.test
-  #         message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-  #         should_ack: 1
-  #         server: jetstream
+        # Publish a message to the stream and expect it to ack
+        - name: publish_order
+          uses: nats-io/jetstream-gh-action@main
+          with:
+            subject: ORDERS.test
+            message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
+            should_ack: 1
+            server: jetstream
 
-  #     # We make sure that the Stream now holds 1 message
-  #     - name: check_stream_size
-  #       uses: nats-io/jetstream-gh-action/eval/stream@main
-  #       with:
-  #         stream: ORDERS
-  #         expression: |
-  #           State.Msgs == 1
-  #           Config.Storage == 0
-  #         server: jetstream
+        # We make sure that the Stream now holds 1 message
+        - name: check_stream_size
+          uses: nats-io/jetstream-gh-action/eval/stream@main
+          with:
+            stream: ORDERS
+            expression: |
+              State.Msgs == 1
+              Config.Storage == 0
+            server: jetstream
 
-  #     # We purge all the messages in the stream
-  #     - name: purge_orders
-  #       uses: nats-io/jetstream-gh-action/purge/stream@main
-  #       with:
-  #         stream: ORDERS
-  #         server: jetstream
+        # We purge all the messages in the stream
+        - name: purge_orders
+          uses: nats-io/jetstream-gh-action/purge/stream@main
+          with:
+            stream: ORDERS
+            server: jetstream
 
-  #     # Now the stream should hold no messages
-  #     - name: check_stream_size
-  #       uses: nats-io/jetstream-gh-action/eval/stream@main
-  #       with:
-  #         stream: ORDERS
-  #         expression: State.Msgs == 0
-  #         server: jetstream
+        # Now the stream should hold no messages
+        - name: check_stream_size
+          uses: nats-io/jetstream-gh-action/eval/stream@main
+          with:
+            stream: ORDERS
+            expression: State.Msgs == 0
+            server: jetstream
 
-  #     # And finally we delete the consumer
-  #     - name: delete_orders_new_consumer
-  #       uses: nats-io/jetstream-gh-action/delete/consumer@main
-  #       with:
-  #         stream: ORDERS
-  #         consumer: NEW
-  #         server: jetstream
+        # And finally we delete the consumer
+        - name: delete_orders_new_consumer
+          uses: nats-io/jetstream-gh-action/delete/consumer@main
+          with:
+            stream: ORDERS
+            consumer: NEW
+            server: jetstream
 
-  #     # and the Stream
-  #     - name: delete_orders_stream
-  #       uses: nats-io/jetstream-gh-action/delete/stream@main
-  #       with:
-  #         stream: ORDERS
-  #         server: jetstream
+        # and the Stream
+        - name: delete_orders_stream
+          uses: nats-io/jetstream-gh-action/delete/stream@main
+          with:
+            stream: ORDERS
+            server: jetstream
