@@ -22,8 +22,8 @@ jobs:
           docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
           docker restart jetstream
       # Create a typical ORDERS stream
-      - name: http to nats
-        run: curl http://localhost:8222/jsz
+      # - name: http to nats
+      #   run: curl http://localhost:8222/jsz
       - name: create_orders_stream
         uses: nats-io/jetstream-gh-action/create/stream@main
         with:
