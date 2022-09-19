@@ -26,7 +26,7 @@ jobs:
       #   run: curl http://localhost:8222/jsz
   create_orders:
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - uses: actions/checkout@master
       - name: orders_stream
         uses: nats-io/jetstream-gh-action/create/stream@main
@@ -52,11 +52,11 @@ jobs:
           message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
           server: jetstream
 
-      # - name: create_orders_stream
-      #   uses: nats-io/jetstream-gh-action/create/stream@main
-      #   with:
-      #     config: action/testdata/ORDERS.json
-      #     server: jetstream
+      - name: create_orders_stream
+        uses: nats-io/jetstream-gh-action/create/stream@main
+        with:
+          config: action/testdata/ORDERS.json
+          server: jetstream
 
       # # Create a NEW consumer on ORDERS
       # - name: create_new_consumer
