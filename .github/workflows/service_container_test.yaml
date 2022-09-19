@@ -86,34 +86,3 @@ jobs:
         with:
           stream: ORDERS
           server: jetstream
-
-  create_orders:
-    runs-on: ubuntu-latest
-    # needs: clean_orders
-    steps:
-      - uses: actions/checkout@master
-      - name: orders_stream
-        uses: nats-io/jetstream-gh-action/create/stream@master
-        with:
-          config: action/testdata/ORDERS.json
-          server: jetstream
-      - name: orders_new_consumer
-        uses: nats-io/jetstream-gh-action/create/consumer@master
-        with:
-          config: action/testdata/ORDERS_NEW.json
-          stream: ORDERS
-          server: jetstream
-
-  # We publish a message to a specific Subject, perhaps some consumer is 
-  # waiting there for it to kick off tests
-  publish_message:
-    runs-on: ubuntu-latest
-    needs: create_orders
-    steps:
-      - uses: actions/checkout@master
-      - name: orders_new_consumer
-        uses: nats-io/jetstream-gh-action@master
-        with:
-          subject: ORDERS.deployment
-          message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-          server: jetstream
