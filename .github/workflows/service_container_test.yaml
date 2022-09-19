@@ -1,5 +1,7 @@
-on: push
-name: orders
+on:
+  - pull_request
+  - push
+
 jobs:
   test_create_and_delete:
     runs-on: ubuntu-latest
@@ -11,35 +13,96 @@ jobs:
           - 4222:4222
           - 8222:8222
 
-  # First we delete the ORDERS stream and consumer if they already exist
-  clean_orders:
-    runs-on: ubuntu-latest
     steps:
-      - name: orders_stream
-        uses: nats-io/jetstream-gh-action/delete/stream@master
-        with:
-          missing_ok: 1
-          stream: ORDERS
-          server: jetstram:4222
+      - uses: actions/checkout@main
 
-  # Now we create the Stream and Consumers using the same configuration files the 
-  # nats CLI utility would use as shown above
+      - name: start_jetstream
+        run: |
+          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+          docker restart jetstream
+      # Create a typical ORDERS stream
+      - name: http to nats
+        run: curl http://localhost:8222/jsz
+      - name: create_orders_stream
+        uses: nats-io/jetstream-gh-action/create/stream@main
+        with:
+          config: action/testdata/ORDERS.json
+          server: jetstream
+
+      # Create a NEW consumer on ORDERS
+      - name: create_new_consumer
+        uses: nats-io/jetstream-gh-action/create/consumer@main
+        with:
+          stream: ORDERS
+          config: action/testdata/ORDERS_NEW.json
+          server: jetstream
+
+      # Publish a message to the stream and expect it to ack
+      - name: publish_order
+        uses: nats-io/jetstream-gh-action@main
+        with:
+          subject: ORDERS.test
+          message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
+          should_ack: 1
+          server: jetstream
+
+      # We make sure that the Stream now holds 1 message
+      - name: check_stream_size
+        uses: nats-io/jetstream-gh-action/eval/stream@main
+        with:
+          stream: ORDERS
+          expression: |
+            State.Msgs == 1
+            Config.Storage == 0
+          server: jetstream
+
+      # We purge all the messages in the stream
+      - name: purge_orders
+        uses: nats-io/jetstream-gh-action/purge/stream@main
+        with:
+          stream: ORDERS
+          server: jetstream
+
+      # Now the stream should hold no messages
+      - name: check_stream_size
+        uses: nats-io/jetstream-gh-action/eval/stream@main
+        with:
+          stream: ORDERS
+          expression: State.Msgs == 0
+          server: jetstream
+
+      # And finally we delete the consumer
+      - name: delete_orders_new_consumer
+        uses: nats-io/jetstream-gh-action/delete/consumer@main
+        with:
+          stream: ORDERS
+          consumer: NEW
+          server: jetstream
+
+      # and the Stream
+      - name: delete_orders_stream
+        uses: nats-io/jetstream-gh-action/delete/stream@main
+        with:
+          stream: ORDERS
+          server: jetstream
+
   create_orders:
     runs-on: ubuntu-latest
-    needs: clean_orders
+    # needs: clean_orders
     steps:
       - uses: actions/checkout@master
       - name: orders_stream
         uses: nats-io/jetstream-gh-action/create/stream@master
         with:
-          config: ORDERS.json
-          server: jetstram:4222
+          config: action/testdata/ORDERS.json
+          server: jetstream
       - name: orders_new_consumer
         uses: nats-io/jetstream-gh-action/create/consumer@master
         with:
-          config: ORDERS_NEW.json
+          config: action/testdata/ORDERS_NEW.json
           stream: ORDERS
-          server: jetstram:4222
+          server: jetstream
 
   # We publish a message to a specific Subject, perhaps some consumer is 
   # waiting there for it to kick off tests
@@ -53,4 +116,4 @@ jobs:
         with:
           subject: ORDERS.deployment
           message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-          server: jetstram:4222
+          server: jetstream
