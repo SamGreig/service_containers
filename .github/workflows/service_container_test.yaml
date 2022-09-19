@@ -1,6 +1,15 @@
 on: push
 name: orders
 jobs:
+  test_create_and_delete:
+    runs-on: ubuntu-latest
+    services:
+      jetstream:
+        image: nats:alpine
+        options: --name jetstream
+        ports:
+          - 4222:4222
+          - 8222:8222
 
   # First we delete the ORDERS stream and consumer if they already exist
   clean_orders:
@@ -11,7 +20,7 @@ jobs:
         with:
           missing_ok: 1
           stream: ORDERS
-          server: js.example.net
+          server: jetstram:4222
 
   # Now we create the Stream and Consumers using the same configuration files the 
   # nats CLI utility would use as shown above
@@ -24,13 +33,13 @@ jobs:
         uses: nats-io/jetstream-gh-action/create/stream@master
         with:
           config: ORDERS.json
-          server: js.example.net
+          server: jetstram:4222
       - name: orders_new_consumer
         uses: nats-io/jetstream-gh-action/create/consumer@master
         with:
           config: ORDERS_NEW.json
           stream: ORDERS
-          server: js.example.net
+          server: jetstram:4222
 
   # We publish a message to a specific Subject, perhaps some consumer is 
   # waiting there for it to kick off tests
@@ -44,4 +53,4 @@ jobs:
         with:
           subject: ORDERS.deployment
           message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-          server: js.example.net
+          server: jetstram:4222
