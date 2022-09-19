@@ -16,11 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - name: start_jetstream
-        run: |
-          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-          docker restart jetstream
+      # - name: start_jetstream
+      #   run: |
+      #     chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+      #     docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+      #     docker restart jetstream
       # Create a typical ORDERS stream
       # - name: http to nats
       #   run: curl http://localhost:8222/jsz
