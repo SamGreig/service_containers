@@ -27,7 +27,7 @@ jobs:
   create_orders:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@main
       - name: orders_stream
         uses: nats-io/jetstream-gh-action/create/stream@main
         with:
@@ -38,7 +38,7 @@ jobs:
         with:
           config: action/testdata/ORDERS_NEW.json
           stream: ORDERS
-          server: jetstream
+          server: jetstream:4222
 
   publish_message:
     runs-on: ubuntu-latest
@@ -50,13 +50,13 @@ jobs:
         with:
           subject: ORDERS.deployment
           message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-          server: jetstream
+          server: jetstream:4222
 
       - name: create_orders_stream
         uses: nats-io/jetstream-gh-action/create/stream@main
         with:
           config: action/testdata/ORDERS.json
-          server: jetstream
+          server: jetstream:4222
 
       # # Create a NEW consumer on ORDERS
       # - name: create_new_consumer
