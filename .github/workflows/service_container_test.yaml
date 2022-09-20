@@ -27,7 +27,7 @@ jobs:
       #   with:
       #     time: '30s'
       - name: http to nats
-        run: curl http://localhost:8222/jsz
+        run: curl https://localhost:8222/jsz
 
 # jobs:
 #   set_up_nats:
