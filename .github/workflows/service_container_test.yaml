@@ -31,7 +31,7 @@ jobs:
       - name: pull nats
         run: docker pull nats:latest
       - name: set up nats server
-        run: docker run --name nats-server -p 4222:4222 -p 8222:8222 -ti nats:latest -js -m 8222
+        run: docker run --name nats-server -p 4222:4222 -p 8222:8222 nats:latest -js -m 8222
       - name: http to nats
         run: curl http://localhost:8222/jsz
 
