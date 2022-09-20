@@ -16,6 +16,15 @@ jobs:
         go-version: 1.19
     - name: Install nats cli
       run: go install github.com/nats-io/natscli/nats@latest
+    - name: run nats commands
+      run: |
+            nats context add local --description "Localhost"
+            nats context add nats --server demo.nats.io:4222 --description "NATS Demo" --select
+            nats context ls
+            nats sub cli.demo
+
+
+
     
 
       # - name: start_jetstream
