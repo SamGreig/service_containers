@@ -22,8 +22,10 @@ jobs:
           docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
           docker restart jetstream
 
-      - name: stuff
-        run: curl http://localhost:8222/healthz
+      - name: Sleep for 30 seconds
+        uses: whatnick/wait-action@master
+        with:
+          time: '30s'
 
 # jobs:
 #   set_up_nats:
