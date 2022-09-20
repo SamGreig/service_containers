@@ -19,7 +19,7 @@ jobs:
       - name: start_jetstream
         run: |
           chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:docker-entrypoint.sh
           docker restart jetstream
 
       # - name: Sleep for 30 seconds
