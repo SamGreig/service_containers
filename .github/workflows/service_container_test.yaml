@@ -16,7 +16,7 @@ jobs:
     #      - name: start jetstream
     #        run: /usr/local/bin/nats-server --js
   start_nats_instance:
-    runs-on: ubuntu-latest
+    #  runs-on: ubuntu-latest
     steps:
       - name: start_jetstream
         run: |
