@@ -3,60 +3,70 @@ on:
   - push
 
 jobs:
-  test_create_and_delete:
-    runs-on: ubuntu-latest
-    services:
-      jetstream:
-        image: nats:alpine
-        options: --name jetstream
-        ports:
-          - 4222:4222
-          - 8222:8222
+  # test_create_and_delete:
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     jetstream:
+  #       image: nats:alpine
+  #       options: --name jetstream
+  #       ports:
+  #         - 4222:4222
+  #         - 8222:8222
 
-    steps:
-      - uses: actions/checkout@main
+  #   steps:
+  #     - uses: actions/checkout@main
 
-      - name: start_jetstream
-        run: |
-          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-          docker restart jetstream
+  #     - name: start_jetstream
+  #       run: |
+  #         chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+  #         docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+  #         docker restart jetstream
       # Create a typical ORDERS stream
       # - name: http to nats
       #   run: curl http://localhost:8222/jsz
-  create_orders:
-    runs-on: ubuntu-latest
+  install_nats_manually:
+    runs-on: utbuntu-latest
     steps:
       - uses: actions/checkout@main
-      - name: orders_stream
-        uses: nats-io/jetstream-gh-action/create/stream@main
-        with:
-          config: action/testdata/ORDERS.json
-          server: jestream
-      - name: orders_new_consumer
-        uses: nats-io/jetstream-gh-action/create/consumer@main
-        with:
-          config: action/testdata/ORDERS_NEW.json
-          stream: ORDERS
-          server: jetstream:4222
+      - name: pull nats
+        run: docker pull nats:latest
+      - name: set up nats server
+        run: docker run --name nats-server -p 4222:4222 -p 8222:8222 -ti nats:latest -js -m 8222
+      - name: http to nats
+        run: curl http://localhost:8222/jsz
+  # create_orders:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@main
+  #     - name: orders_stream
+  #       uses: nats-io/jetstream-gh-action/create/stream@main
+  #       with:
+  #         config: action/testdata/ORDERS.json
+  #         server: jetstream
+  #     - name: orders_new_consumer
+  #       uses: nats-io/jetstream-gh-action/create/consumer@main
+  #       with:
+  #         config: action/testdata/ORDERS_NEW.json
+  #         stream: ORDERS
+  #         server: jetstream
 
-  publish_message:
-    runs-on: ubuntu-latest
-    needs: create_orders
-    steps:
-      - uses: actions/checkout@main
-      - name: orders_new_consumer
-        uses: nats-io/jetstream-gh-action@main
-        with:
-          subject: ORDERS.deployment
-          message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
-          server: jetstream:4222
+  # publish_message:
+  #   runs-on: ubuntu-latest
+  #   needs: create_orders
+  #   steps:
+  #     - uses: actions/checkout@main
+  #     - name: orders_new_consumer
+  #       uses: nats-io/jetstream-gh-action@main
+  #       with:
+  #         subject: ORDERS.deployment
+  #         message: Published new deployment via "${{ github.event_name }}" in "${{ github.repository }}"
+  #         server: jetstream:4222
 
-      - name: create_orders_stream
-        uses: nats-io/jetstream-gh-action/create/stream@main
-        with:
-          config: action/testdata/ORDERS.json
-          server: jetstream:4222
+  #     - name: create_orders_stream
+  #       uses: nats-io/jetstream-gh-action/create/stream@main
+  #       with:
+  #         config: action/testdata/ORDERS.json
+  #         server: jetstream:4222
 
       # # Create a NEW consumer on ORDERS
       # - name: create_new_consumer
