@@ -11,7 +11,7 @@ jobs:
     - name: Install dependencies
       run: make up
     - name: http to nats
-      run: curl nats://nats:4222
+      run: curl http://localhost:8222/jsz
 
       # - name: start_jetstream
       #   run: |
