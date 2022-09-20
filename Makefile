@@ -1,5 +1,5 @@
 up:
-	chmod a+x 
+	# chmod a+x 
 	docker compose -f scripts/docker-compose.yaml up -d
 	sleep 3
 	ls -l
