@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       jetstream:
-        image: nats:alpine
+        image: nats
         ports:
           - 4222:4222
           - 8222:8222
