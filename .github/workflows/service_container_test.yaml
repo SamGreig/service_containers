@@ -3,18 +3,33 @@ on:
   - push
 
 jobs:
-  install_nats_manually:
+  node-docker:
     runs-on: ubuntu-latest
     container:
       image: nats:latest
       ports:
         - 4222:4222
         - 8222:8222
-      steps:
-        name: start nats server
-        run: --js
-  test_connection:
-    runs-on: ubuntu-latest
-      steps:
-        name: http to nats
-        run: curl http://localhost:8222/jsz
+    steps:
+         - name: Log the node version
+           run: |
+             node -v
+             cat /etc/os-release
+             --js
+         - name: start nats
+           run: --js
+  # install_nats_manually:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: nats:latest
+  #     ports:
+  #       - 4222:4222
+  #       - 8222:8222
+  #     steps:
+  #       name: start nats server
+  #       run: --js
+  # test_connection:
+  #   runs-on: ubuntu-latest
+  #     steps:
+  #       name: http to nats
+  #       run: curl http://localhost:8222/jsz
