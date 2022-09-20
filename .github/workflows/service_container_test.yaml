@@ -16,16 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: start_jetstream
-        run: |
-          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-          docker restart jetstream
+      # - name: start_jetstream
+      #   run: |
+      #     chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+      #     docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+      #     docker restart jetstream
 
-      - name: Sleep for 30 seconds
-        uses: whatnick/wait-action@master
-        with:
-          time: '30s'
+      # - name: Sleep for 30 seconds
+      #   uses: whatnick/wait-action@master
+      #   with:
+      #     time: '30s'
       - name: http to nats
         run: curl http://localhost:8222/jsz
 
