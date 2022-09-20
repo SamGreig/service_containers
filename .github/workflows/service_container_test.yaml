@@ -18,11 +18,11 @@ jobs:
   start_nats_instance:
     #  runs-on: ubuntu-latest
     steps:
-      - name: start_jetstream
-        run: |
-          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-          docker restart jetstream
+    - name: start_jetstream
+      run: |
+        chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+        docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+        docker restart jetstream
   
   # install_nats_manually:
   #   runs-on: ubuntu-latest
