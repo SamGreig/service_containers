@@ -25,7 +25,7 @@ jobs:
       # - name: http to nats
       #   run: curl http://localhost:8222/jsz
   install_nats_manually:
-    runs-on: utbuntu-latest
+    runs-on: utbuntu-20.04
     steps:
       - uses: actions/checkout@main
       - name: pull nats
@@ -34,7 +34,7 @@ jobs:
         run: docker run --name nats-server -p 4222:4222 -p 8222:8222 -ti nats:latest -js -m 8222
       - name: http to nats
         run: curl http://localhost:8222/jsz
-        
+
   # create_orders:
   #   runs-on: ubuntu-latest
   #   steps:
