@@ -3,18 +3,28 @@ on:
   - push
 
 jobs:
-  node-docker:
+  set_up_nats:
     runs-on: ubuntu-latest
     container:
       image: nats:alpine
       ports:
         - 4222:4222
         - 8222:8222
+    # steps:
+    #     #  - name: add bash
+    #     #    run: apk add bash bash-doc bash-completion
+    #      - name: start jetstream
+    #        run: /usr/local/bin/nats-server --js
+  start_nats_instance:
+    runs-on: ubuntu-latest
     steps:
-        #  - name: add bash
-        #    run: apk add bash bash-doc bash-completion
-         - name: start jetstream
-           run: /usr/local/bin/nats-server --js
+      - uses: actions/checkout@v3
+      - name: start_jetstream
+        run: |
+          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+          docker restart jetstream
+  
   # install_nats_manually:
   #   runs-on: ubuntu-latest
   #   container:
