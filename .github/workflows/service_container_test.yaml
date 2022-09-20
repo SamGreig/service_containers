@@ -13,9 +13,8 @@ jobs:
       steps:
         name: start nats server
         run: --js
-    test_connection:
-      runs-on: ubuntu-latest
-      steps:
-        name: http to nats
-        run: curl http://localhost:8222/jsz
-        
+  test_connection:
+    runs-on: ubuntu-latest
+    steps:
+      name: http to nats
+      run: curl http://localhost:8222/jsz
