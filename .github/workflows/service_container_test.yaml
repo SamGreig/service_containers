@@ -11,7 +11,9 @@ jobs:
         - 4222:4222
         - 8222:8222
     steps:
-         - name: start nats
+         - name: add bash
+           run: apk add bash bash-doc bash-completion
+         - name: start jetstream
            run: ls
   # install_nats_manually:
   #   runs-on: ubuntu-latest
