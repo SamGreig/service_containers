@@ -11,10 +11,10 @@ jobs:
         - 4222:4222
         - 8222:8222
     steps:
-         - name: add bash
-           run: apk add bash bash-doc bash-completion
+        #  - name: add bash
+        #    run: apk add bash bash-doc bash-completion
          - name: start jetstream
-           run: ls
+           run: /usr/local/bin/nats-server --js
   # install_nats_manually:
   #   runs-on: ubuntu-latest
   #   container:
