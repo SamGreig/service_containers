@@ -18,7 +18,6 @@ jobs:
   start_nats_instance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - name: start_jetstream
         run: |
           chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
