@@ -2,23 +2,46 @@ on:
   - pull_request
   - push
 
+name: create_and_delete
 jobs:
-  set_up_nats:
-    name: set up nats
+  test_create_and_delete:
     runs-on: ubuntu-latest
-    container:
-      image: nats:alpine
-      ports:
-        - 4222:4222
-        - 8222:8222
-      options: --name jetstream
+    services:
+      jetstream:
+        image: nats:alpine
+        ports:
+          - 4222:4222
+          - 8222:8222
+        options: --name jetstream
     steps:
-    - uses: actions/checkout@v3
-    - name: start_jetstream
-      run: |
-        chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-        docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-        docker restart jetstream
+      - uses: actions/checkout@v3
+
+      - name: start_jetstream
+        run: |
+          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+          docker restart jetstream
+
+      - name: stuff
+        run: curl http://localhost:8222/healthz
+
+# jobs:
+#   set_up_nats:
+#     name: set up nats
+#     runs-on: ubuntu-latest
+#     container:
+#       image: nats:alpine
+#       ports:
+#         - 4222:4222
+#         - 8222:8222
+#       options: --name jetstream
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: start_jetstream
+#       run: |
+#         chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+#         docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+#         docker restart jetstream
 
     #      - name: start jetstream
     #        run: /usr/local/bin/nats-server --js
