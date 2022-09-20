@@ -7,10 +7,12 @@ jobs:
     name: set up nats
     runs-on: ubuntu-latest
     container:
-      image: nats:alpine
-      ports:
-        - 4222:4222
-        - 8222:8222
+      jetstream:
+        image: nats:alpine
+        ports:
+          - 4222:4222
+          - 8222:8222
+        options: --name jetstream
     steps:
     - uses: actions/checkout@v3
     - name: start_jetstream
