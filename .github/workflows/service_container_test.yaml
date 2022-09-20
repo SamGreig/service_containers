@@ -25,7 +25,7 @@ jobs:
       # - name: http to nats
       #   run: curl http://localhost:8222/jsz
   install_nats_manually:
-    runs-on: utbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: pull nats
