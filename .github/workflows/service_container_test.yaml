@@ -4,6 +4,14 @@ on:
 
 name: create_and_delete
 jobs:
+  create_nats:
+    runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: run compose
+          run: docker compose -f scripts/docker-compose.yaml up -d
+        - name: check endpoint
+          run: curl http://localhost:8222/jsz
   # test_create_and_delete:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -45,18 +53,18 @@ jobs:
 #     name: set up nats
 #     runs-on: ubuntu-latest
 #     container:
-#       image: nats:alpine
+#       image: nats:latest
 #       ports:
 #         - 4222:4222
 #         - 8222:8222
 #       options: --name jetstream
-#     steps:
-#     - uses: actions/checkout@v3
-#     - name: start_jetstream
-#       run: |
-#         chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
-#         docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
-#         docker restart jetstream
+    # steps:
+    # - uses: actions/checkout@v3
+    # - name: start_jetstream
+    #   run: |
+    #     chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+    #     docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
+    #     docker restart jetstream
 
     #      - name: start jetstream
     #        run: /usr/local/bin/nats-server --js
@@ -69,18 +77,18 @@ jobs:
   #       docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
   #       docker restart jetstream
   
-  install_nats_manually:
-    runs-on: ubuntu-latest
-    container:
-      image: nats:latest
-      ports:
-        - 4222:4222
-        - 8222:8222
-      steps:
-        name: start nats server
-        run: --js
-  test_connection:
-    runs-on: ubuntu-latest
-      steps:
-        name: http to nats
-        run: curl http://localhost:8222/jsz
+  # install_nats_manually:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: nats:latest
+  #     ports:
+  #       - 4222:4222
+  #       - 8222:8222
+  #     steps:
+  #       name: start nats server
+  #       run: --js
+  # test_connection:
+  #   runs-on: ubuntu-latest
+  #     steps:
+  #       name: http to nats
+  #       run: curl http://localhost:8222/jsz
