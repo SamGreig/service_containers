@@ -4,32 +4,33 @@ on:
 
 name: create_and_delete
 jobs:
-  create_nats:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: run compose
-        run: docker compose -f scripts/docker-compose.yaml up -d
-      - name: check endpoint
-        run: curl http://localhost:8222/jsz
-  # test_create_and_delete:
+  # create_nats:
   #   runs-on: ubuntu-latest
   #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Install dependencies
-  #     run: make up
-  #   - name: Set up Go
-  #     uses: actions/setup-go@v3
-  #     with:
-  #       go-version: 1.19
-  #   - name: Install nats cli
-  #     run: go install github.com/nats-io/natscli/nats@latest
-  #   - name: run nats commands
-  #     run: |
-  #           nats context add local --description "Localhost"
-  #           nats context add nats --server demo.nats.io:4222 --description "NATS Demo" --select
-  #           nats context ls
-  #           nats sub cli.demo
+  #     - uses: actions/checkout@v3
+  #     - name: run compose
+  #       run: docker compose -f scripts/docker-compose.yaml up -d
+  #     - name: check endpoint
+  #       run: curl http://localhost:8222/jsz
+  test_create_and_delete:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: make up
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Install nats cli
+      run: go install github.com/nats-io/natscli/nats@latest
+    - name: run nats commands
+      run: |
+            nats context add local --description "Localhost"
+            nats context add nats --server localhost:4222 --description "NATS Demo" --select
+            nats context ls
+            nats info
+            # nats sub cli.demo
 
 
 
