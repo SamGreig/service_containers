@@ -16,17 +16,21 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.19
-      - name: Install nats cli
-        run: go install github.com/nats-io/natscli/nats@latest
-      - name: run nats commands
+      - name: create streams
         run: |
-              nats context add local --description "Localhost"
-              nats context add nats --server http://localhost:4222 --description "NATS Demo" --select
-              nats context ls
-              nats account info
-              # nats server ls
-              # nats server ping
-              # nats sub cli.demo
+              ./scripts/create_streams.sh
+              ./scripts/create_consumsers.sh
+      # - name: Install nats cli
+      #   run: go install github.com/nats-io/natscli/nats@latest
+      # - name: run nats commands
+      #   run: |
+      #         nats context add local --description "Localhost"
+      #         nats context add nats --server http://localhost:4222 --description "NATS Demo" --select
+      #         nats context ls
+      #         nats account info
+      #         # nats server ls
+      #         # nats server ping
+      #         # nats sub cli.demo
       # - name: check endpoint
       #   run: curl http://localhost:8222/jsz
   # test_create_and_delete:
