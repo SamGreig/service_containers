@@ -19,7 +19,7 @@ jobs:
       - name: create streams
         run: |
               chmod a+x ./scripts/create_streams.sh
-              chmod a+x ./scripts/create_consumsers.sh
+              ./scripts/create_consumsers.sh
       # - name: Install nats cli
       #   run: go install github.com/nats-io/natscli/nats@latest
       # - name: run nats commands
