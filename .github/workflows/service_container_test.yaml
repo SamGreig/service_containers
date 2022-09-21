@@ -21,7 +21,7 @@ jobs:
       - name: run nats commands
         run: |
               nats context add local --description "Localhost"
-              nats context add nats --server localhost:4222 --description "NATS Demo" --select
+              nats context add nats --server http://localhost:4222 --description "NATS Demo" --select
               nats context ls
               # nats server ls
               nats server ping
