@@ -4,24 +4,24 @@ on:
 
 name: create_and_delete
 jobs:
-  test_create_and_delete:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install dependencies
-      run: make up
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.19
-    - name: Install nats cli
-      run: go install github.com/nats-io/natscli/nats@latest
-    - name: run nats commands
-      run: |
-            nats context add local --description "Localhost"
-            nats context add nats --server demo.nats.io:4222 --description "NATS Demo" --select
-            nats context ls
-            nats sub cli.demo
+  # test_create_and_delete:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Install dependencies
+  #     run: make up
+  #   - name: Set up Go
+  #     uses: actions/setup-go@v3
+  #     with:
+  #       go-version: 1.19
+  #   - name: Install nats cli
+  #     run: go install github.com/nats-io/natscli/nats@latest
+  #   - name: run nats commands
+  #     run: |
+  #           nats context add local --description "Localhost"
+  #           nats context add nats --server demo.nats.io:4222 --description "NATS Demo" --select
+  #           nats context ls
+  #           nats sub cli.demo
 
 
 
@@ -69,18 +69,18 @@ jobs:
   #       docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh jetstream:/usr/local/bin/docker-entrypoint.sh
   #       docker restart jetstream
   
-  # install_nats_manually:
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: nats:latest
-  #     ports:
-  #       - 4222:4222
-  #       - 8222:8222
-  #     steps:
-  #       name: start nats server
-  #       run: --js
-  # test_connection:
-  #   runs-on: ubuntu-latest
-  #     steps:
-  #       name: http to nats
-  #       run: curl http://localhost:8222/jsz
+  install_nats_manually:
+    runs-on: ubuntu-latest
+    container:
+      image: nats:latest
+      ports:
+        - 4222:4222
+        - 8222:8222
+      steps:
+        name: start nats server
+        run: --js
+  test_connection:
+    runs-on: ubuntu-latest
+      steps:
+        name: http to nats
+        run: curl http://localhost:8222/jsz
