@@ -17,9 +17,7 @@ jobs:
         with:
           go-version: 1.19
       - name: create streams
-        run: |
-              ls
-              sudo chmod a+x ./scripts/create_streams.sh
+        run: sudo chmod a+x ./scripts/create_streams.sh
               # ./scripts/create_consumsers.sh
       # - name: Install nats cli
       #   run: go install github.com/nats-io/natscli/nats@latest
