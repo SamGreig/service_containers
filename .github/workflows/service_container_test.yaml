@@ -23,8 +23,9 @@ jobs:
               nats context add local --description "Localhost"
               nats context add nats --server http://localhost:4222 --description "NATS Demo" --select
               nats context ls
+              nats account info
               # nats server ls
-              nats server ping
+              # nats server ping
               # nats sub cli.demo
       # - name: check endpoint
       #   run: curl http://localhost:8222/jsz
